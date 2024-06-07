@@ -23,11 +23,11 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
-    public User signup(RegisterUserDto input) {
-        var user = new User()
-                .setFullName(input.getFullName())
-                .setEmail(input.getEmail())
-                .setPassword(passwordEncoder.encode(input.getPassword()));
+    public User signup(RegisterUserDto registerUserDto) {
+        User user = new User()
+                .setUserName(registerUserDto.getUserName())
+                .setEmail(registerUserDto.getEmail())
+                .setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
 
         return userRepository.save(user);
     }

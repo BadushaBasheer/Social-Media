@@ -1,5 +1,6 @@
 package com.socialmedia.socialmedia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -21,13 +23,14 @@ import java.util.List;
 @Table(name = "users")
 @Entity
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Integer id;
 
-    @Column(nullable = false)
-    private String fullName;
+    @Column(nullable = false, name = "username")
+    private String userName;
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
@@ -42,6 +45,16 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Integer> followers = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Integer> following = new ArrayList<>();
+
+    @ManyToMany
+    @JsonIgnore
+    private List<Post> savedPost = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -78,8 +91,8 @@ public class User implements UserDetails {
         return this;
     }
 
-    public User setFullName(String fullName) {
-        this.fullName = fullName;
+    public User setUserName(String userName) {
+        this.userName = userName;
         return this;
     }
 
